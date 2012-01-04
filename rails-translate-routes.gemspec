@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "rails-translate-routes"
-  s.version = "0.0.0"
+  s.version = "0.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Francesc Pla"]
@@ -19,11 +19,13 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
     "Gemfile",
+    "Gemfile.lock",
     "LICENSE.txt",
     "README.rdoc",
     "Rakefile",
     "VERSION",
     "lib/rails-translate-routes.rb",
+    "rails-translate-routes.gemspec",
     "test/helper.rb",
     "test/test_rails-translate-routes.rb"
   ]
