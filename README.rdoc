@@ -1,19 +1,163 @@
 = rails-translate-routes
 
-Description goes here.
+Rails 3.x routes translations based on Raul's translate_routes (https://github.com/raul/translate_routes).
 
-== Contributing to rails-translate-routes
- 
-* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
-* Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
-* Fork the project
-* Start a feature/bugfix branch
-* Commit and push until you are happy with your contribution
-* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
-* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+It's currently a stripped down version of the forked gem, adding some bugfixes for rails 3.1 and features I needed for my project. See doc below to see what it can do.
 
-== Copyright
+translate_routes & i18n_routes seems to be unmaintained projects so I decided to start a fork of the first one for my own projects, I can't promise high dedication but I'll to maintain it for my own use and take care all patches & bugs submitted, help is welcome!
 
-Copyright (c) 2012 Francesc Pla. See LICENSE.txt for
-further details.
+== Installation
 
+Add it to your Gemfile:
+
+  gem 'rails-translate-routes'
+
+== Basic usage
+
+Let's imagine you have a SampleApp with products and a contact page. A typical 'routes.rb' file should look like:
+
+  SampleApp::Application.routes.draw do
+    resources :products
+    match 'contact', :to => 'pages#contact'
+  end
+
+Running 'rake routes' we have:
+
+      products GET    /products(.:format)          {:action=>"index", :controller=>"products"}
+               POST   /products(.:format)          {:action=>"create", :controller=>"products"}
+   new_product GET    /products/new(.:format)      {:action=>"new", :controller=>"products"}
+  edit_product GET    /products/:id/edit(.:format) {:action=>"edit", :controller=>"products"}
+       product GET    /products/:id(.:format)      {:action=>"show", :controller=>"products"}
+               PUT    /products/:id(.:format)      {:action=>"update", :controller=>"products"}
+               DELETE /products/:id(.:format)      {:action=>"destroy", :controller=>"products"}
+       contact        /contact(.:format)           {:action=>"contact", :controller=>"pages"}
+
+We want to have them in two languages english and spanish, to accomplish this with rails-translate-routes:
+
+1) We have to activate the translations appending this line to the end of 'routes.rb'
+
+  ActionDispatch::Routing::Translator.translate_from_file('config/locales/routes.yml')
+
+2) Now we can write translations on a standard YAML file (e.g: in config/locales/routes.yml), including all the locales and their translations:
+
+  en:
+    # you can leave empty locales, for example the default one
+  es:
+    products: productos
+    contact: contacto
+    new: crear
+
+3) Include this filter in your ApplicationController:
+
+  before_filter :set_locale_from_url
+
+Also remember to include language detection to your app, a simple example of an ApplicationController
+
+  class ApplicationController < ActionController::Base
+    protect_from_forgery
+
+    before_filter :set_locale
+    before_filter :set_locale_from_url
+
+    private
+
+    def set_locale
+      I18n.locale = params[:locale] || ((lang = request.env['HTTP_ACCEPT_LANGUAGE']) && lang[/^[a-z]{2}/])
+    end
+  end
+
+And that's it! Now if we execute 'rake routes':
+
+    products_en GET    /products(.:format)              {:action=>"index", :controller=>"products"}
+    products_es GET    /es/productos(.:format)          {:action=>"index", :controller=>"products"}
+                POST   /products(.:format)              {:action=>"create", :controller=>"products"}
+                POST   /es/productos(.:format)          {:action=>"create", :controller=>"products"}
+ new_product_en GET    /products/new(.:format)          {:action=>"new", :controller=>"products"}
+ new_product_es GET    /es/productos/new(.:format)      {:action=>"new", :controller=>"products"}
+edit_product_en GET    /products/:id/edit(.:format)     {:action=>"edit", :controller=>"products"}
+edit_product_es GET    /es/productos/:id/edit(.:format) {:action=>"edit", :controller=>"products"}
+     product_en GET    /products/:id(.:format)          {:action=>"show", :controller=>"products"}
+     product_es GET    /es/productos/:id(.:format)      {:action=>"show", :controller=>"products"}
+                PUT    /products/:id(.:format)          {:action=>"update", :controller=>"products"}
+                PUT    /es/productos/:id(.:format)      {:action=>"update", :controller=>"products"}
+                DELETE /products/:id(.:format)          {:action=>"destroy", :controller=>"products"}
+                DELETE /es/productos/:id(.:format)      {:action=>"destroy", :controller=>"products"}
+     contact_en        /contact(.:format)               {:action=>"contact", :controller=>"pages"}
+     contact_es        /es/contacto(.:format)           {:action=>"contact", :controller=>"pages"}
+
+
+The application recognizes the different routes and sets the 'I18n.locale' value in controllers, but what about the routes generation? As you can see on the previous rake routes execution, the 'contact_es_path' and 'contact_en_path' routing helpers have been generated and are available in your controllers and views. Additionally, a 'contact_path' helper has been generated, which generates the routes according to the current request's locale. This means that if you use named routes you don't need to modify your application links because the routing helpers are automatically adapted to the current locale.
+
+<b>URL structure options</b>
+
+As you can see by default it generates the following url structure:
+
+  /
+  /es
+  /products/
+  /es/productos/
+  /contact/
+  /es/contactos/
+
+In case you want the default languages to be scoped resulting in the following structure:
+
+  /en
+  /es
+  /en/products/
+  /es/productos/
+  /en/contact/
+  /es/contactos/
+
+You can specify the following option:
+
+  ActionDispatch::Routing::Translator.translate_from_file('config/locales/routes.yml', { :prefix_on_default_locale => true })
+
+If you use the 'prefix_on_default_locale' you will have to make the proper redirect on your root controller from http://www.sampleapp.com/ to http://www.sampleapp.com/en or http://www.sampleapp.com/es rails-translate-routes adds an extra unstranslated root path:
+
+  root_en        /en                              {:controller=>"pages", :action=>"index"}
+  root_es        /es                              {:controller=>"pages", :action=>"index"}
+     root        /                                {:controller=>"pages", :action=>"index"}
+
+A simple example of a redirection to user locale in index method:
+
+  def index
+    unless params[ :locale]
+      # it takes I18n.locale from the previous example set_locale as before_filter in application controller
+      redirect_to eval("root_#{I18n.locale}_path
+    end
+
+    # rest of the controller logic ...
+  end
+
+== TODO
+
+Help is welcome ;)
+
+* make basic testing
+* support for rails 3.2
+
+== Credits
+
+Thanks to:
+
+* Main development of forked gem:
+  * Raul Murciano (http://github.com/raul)
+
+* Contributors of forked gem:
+  * Aitor Garay-Romero (http://github.com/aitorgr)
+  * Christian Hølmer (http://github.com/hoelmer)
+  * Nico Ritsche (https://github.com/ncri)
+  * Cedric Darricau (http://github.com/devsigner)
+  * Olivier Gonzalez (http://github.com/gonzoyumo)
+  * Kristian Mandrup (http://github.com/kristianmandrup)
+  * Pieter Visser (http://github.com/pietervisser)
+  * Marian Theisen (http://github.com/cice)
+  * Enric Lluelles (http://github.com/enriclluelles)
+  * Jaime Iniesta (http://github.com/jaimeiniesta)
+
+== Similar projects
+
+There are other two projects for translating routes in Rails (which I know of), both of them are unfortunately unmaintained but you may want to check them out if you use Rails 2 or have different needs.
+
+* translate_routes (https://github.com/raul/translate_routes)
+* i18n_routing (https://github.com/kwi/i18n_routing)

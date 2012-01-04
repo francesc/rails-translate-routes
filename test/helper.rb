@@ -1,3 +1,5 @@
+# coding: UTF-8
+
 require 'rubygems'
 require 'bundler'
 begin
@@ -7,12 +9,10 @@ rescue Bundler::BundlerError => e
   $stderr.puts "Run `bundle install` to install missing gems"
   exit e.status_code
 end
-require 'test/unit'
-require 'shoulda'
+
+require 'minitest/autorun'
+require 'active_record'
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'rails-translate-routes'
-
-class Test::Unit::TestCase
-end
