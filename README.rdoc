@@ -130,6 +130,29 @@ A simple example of a redirection to user locale in index method:
     # rest of the controller logic ...
   end
 
+<b>Namespaced backends</b>
+
+I usually build app backend in namespaced controllers, routes, ... using 'prefix_on_default_locale' will result in having several routes for backend too, for example:
+
+  /en/admin/products
+  /es/admin/productos
+
+In most cases you won't want to have the backend in several languages, you can set 'routes.rb' this way:
+
+  SampleApp::Application.routes.draw do
+    resources :products
+    match 'contact', :to => 'pages#contact'
+  end
+
+  ActionDispatch::Routing::Translator.translate_from_file('config/locales/routes.yml', { :prefix_on_default_locale => true })
+
+  SampleApp::Application.routes.draw do
+    namespace :admin do
+      resources :products
+      root :to => "admin_products#index"
+    end
+  end
+
 == TODO
 
 Help is welcome ;)
