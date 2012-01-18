@@ -1,8 +1,7 @@
 # coding: UTF-8
 
-# This class knows nothing
-# about Rails.root or Rails.application.routes, and therefor is easier to
-# test without an Rails App.
+# This class knows nothing about Rails.root or Rails.application.routes, 
+# and therefore is easier to test without a Rails app.
 class RailsTranslateRoutes
   TRANSLATABLE_SEGMENT = /^(\w+)(\()?/.freeze
   LOCALE_PARAM_KEY = :locale.freeze
@@ -247,7 +246,7 @@ class RailsTranslateRoutes
     end
 
     # Tries to translate a single path segment. If the path segment
-    # contains sth. like a optional format "people(.:format)", only
+    # contains sth. like an optional format "people(.:format)", only
     # "people" will be translated, if there is no translation, the path
     # segment is blank or begins with a ":" (param key), the segment
     # is returned untouched
@@ -287,7 +286,7 @@ class RailsTranslateRoutes
   end
 end
 
-# Adapter for Rails 3 Apps
+# Adapter for Rails 3 apps
 module ActionDispatch
   module Routing
     module Translator
