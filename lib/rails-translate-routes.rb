@@ -45,6 +45,14 @@ class RailsTranslateRoutes
     @prefix_on_default_locale = locale.to_s
   end
 
+  def no_prefixes
+    @no_prefixes ||= false
+  end
+
+  def no_prefixes= no_prefixes
+    @no_prefixes = no_prefixes
+  end
+
   class << self
     # Default locale suffix generator
     def locale_suffix locale
@@ -228,7 +236,9 @@ class RailsTranslateRoutes
 
     # Add prefix for all non-default locales
     def add_prefix? locale
-      if !default_locale?(locale) || @prefix_on_default_locale
+      if @no_prefixes
+        false
+      elsif !default_locale?(locale) || @prefix_on_default_locale
         true
       else
         false
@@ -300,6 +310,7 @@ module ActionDispatch
           file_path = %w(config locales routes.yml) if file_path.blank?
           r = RailsTranslateRoutes.init_from_file(File.join(Rails.root, file_path))
           r.prefix_on_default_locale = true if options && options[:prefix_on_default_locale] == true
+          r.no_prefixes = true if options && options[:no_prefixes] == true
           r.translate Rails.application.routes
         end
 
