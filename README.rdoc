@@ -100,7 +100,7 @@ By default it generates the following url structure:
   /products/
   /es/productos/
   /contact/
-  /es/contactos/
+  /es/contacto/
 
 
 <b>All languages prefixed</b>
@@ -112,7 +112,7 @@ In case you want the default languages to be scoped resulting in the following s
   /en/products/
   /es/productos/
   /en/contact/
-  /es/contactos/
+  /es/contacto/
 
 You can specify the following option:
 
@@ -143,7 +143,7 @@ In case you don't want the language prefix in the url path because you have a do
   /products/
   /productos/
   /contact/
-  /contactos/
+  /contacto/
 
 You can specify the following option:
 
@@ -153,12 +153,7 @@ Note that the 'no_prefixes' option will override the 'prefix_on_default_locale' 
 
 <b>Namespaced backends</b>
 
-I usually build app backend in namespaced controllers, routes, ... using 'prefix_on_default_locale' will result in having several routes for backend too, for example:
-
-  /en/admin/products
-  /es/admin/productos
-
-In most cases you won't want to have the backend in several languages, you can set 'routes.rb' this way:
+I usually build app backend in namespaced controllers, routes, ... using translated routes will result in duplicated routes or prefixed ones. In most cases you won't want to have the backend in several languages, you can set 'routes.rb' this way:
 
   SampleApp::Application.routes.draw do
     resources :products
