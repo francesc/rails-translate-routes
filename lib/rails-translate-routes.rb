@@ -1,6 +1,6 @@
 # coding: UTF-8
 
-# This class knows nothing about Rails.root or Rails.application.routes, 
+# This class knows nothing about Rails.root or Rails.application.routes,
 # and therefore is easier to test without a Rails app.
 class RailsTranslateRoutes
   TRANSLATABLE_SEGMENT = /^([\w-]+)(\()?/.freeze
