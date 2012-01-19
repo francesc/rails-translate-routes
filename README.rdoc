@@ -164,6 +164,9 @@ Help is welcome ;)
 
 Thanks to:
 
+* Contributors of the current gem:
+  * Martin Carel (https://github.com/cawel)
+
 * Main development of forked gem:
   * Raul Murciano (http://github.com/raul)
 
