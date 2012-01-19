@@ -174,6 +174,16 @@ In most cases you won't want to have the backend in several languages, you can s
     end
   end
 
+== Testing
+
+Once your app is locale-aware, the routes are dependent on the locale. This means that in functional tests, you need to explicitly include the locale like so:
+
+  get :show, :id => 1, :locale => 'en'
+
+But in case you would prefer the locale to be implicit or simply because you don't want to add the locale param to all your previous functional tests, you can require the 'lib/controller_test_helper' file (typically from your test helper file) and then this will work fine:
+
+  get :show, :id => 1
+
 == TODO
 
 Help is welcome ;)
