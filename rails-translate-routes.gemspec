@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rails-translate-routes"
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Francesc Pla"]
-  s.date = "2012-01-04"
+  s.date = "2012-01-19"
   s.description = "Simple gem to translate routes in Rails 3.x based on translate_routes"
   s.email = "francesc@francesc.net"
   s.extra_rdoc_files = [
