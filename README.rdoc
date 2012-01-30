@@ -184,7 +184,6 @@ But in case you would prefer the locale to be implicit or simply because you don
 Help is welcome ;)
 
 * make basic testing
-* support for rails 3.2
 
 == Credits
 
