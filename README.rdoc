@@ -1,6 +1,6 @@
 = rails-translate-routes
 
-Rails 3.x routes translations based on Raul's translate_routes (https://github.com/raul/translate_routes).
+Rails >=3.1 routes translations based on Raul's translate_routes (https://github.com/raul/translate_routes).
 
 It's currently a stripped down version of the forked gem, adding some bugfixes for rails 3.1 and features I needed for my project. See doc below to see what it can do.
 
@@ -193,6 +193,7 @@ Thanks to:
   * Martin Carel (https://github.com/cawel)
   * Johan Gyllenspetz (https://github.com/gyllen)
   * Nico Ritsche (https://github.com/ncri)
+  * Jean-Loup Fenaux (https://github.com/jlfenaux)
 
 * Main development of forked gem:
   * Raul Murciano (http://github.com/raul)
