@@ -151,6 +151,20 @@ You can specify the following option:
 
 Note that the 'no_prefixes' option will override the 'prefix_on_default_locale' option.
 
+<b>Keep untranslated routes</b>
+
+In case you want to keep access to untranslated routes, for easier api or ajax integration for example. Resulting in this structure: 
+
+  /en/available-products
+  /fr/produits-disponibles/
+  /products/
+
+You can specify the following option:
+
+  ActionDispatch::Routing::Translator.translate_from_file('config/locales/routes.yml', { :keep_untranslated_routes => true })
+
+This option is not meant to be used with :no_prefixes.
+
 <b>Namespaced backends</b>
 
 I usually build app backend in namespaced controllers, routes, ... using translated routes will result in duplicated routes or prefixed ones. In most cases you won't want to have the backend in several languages, you can set 'routes.rb' this way:
