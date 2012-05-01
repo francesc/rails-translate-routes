@@ -261,7 +261,7 @@ class RailsTranslateRoutes
     def translations_for route
       translated_routes = []
       available_locales.map do |locale|
-        translated_routes << translate_route route, locale
+        translated_routes << translate_route(route, locale)
       end
       
       # add untranslated_route without url helper if we want to keep untranslated routes
