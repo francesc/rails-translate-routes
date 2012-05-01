@@ -153,7 +153,7 @@ Note that the 'no_prefixes' option will override the 'prefix_on_default_locale' 
 
 <b>Keep untranslated routes</b>
 
-In case you want to keep access to untranslated routes. Resulting in this structure: 
+In case you want to keep access to untranslated routes, for easier api or ajax integration for example. Resulting in this structure: 
 
   /en/available-products
   /fr/produits-disponibles/
