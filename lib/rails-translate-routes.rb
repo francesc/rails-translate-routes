@@ -292,7 +292,7 @@ class RailsTranslateRoutes
     def untranslated_route route
       conditions = {} 
       if Rails.version >= '3.2'
-        conditions[:path_info] = route.path
+        conditions[:path_info] = route.path.spec.to_s
         conditions[:request_method] = parse_request_methods route.verb if route.verb != //
         conditions[:subdomain] = route.constraints[:subdomain] if route.constraints
       else
