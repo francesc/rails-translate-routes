@@ -290,8 +290,15 @@ class RailsTranslateRoutes
 
     # Re-generate untranslated routes (original routes) with name set to nil (which prevents conflict with default untranslated_urls)
     def untranslated_route route
-      conditions = { :path_info => route.path }
-      conditions[:request_method] = parse_request_methods route.conditions[:request_method] if route.conditions.has_key? :request_method
+      conditions = {} 
+      if Rails.version >= '3.2'
+        conditions[:path_info] = route.path
+        conditions[:request_method] = parse_request_methods route.verb if route.verb != //
+        conditions[:subdomain] = route.constraints[:subdomain] if route.constraints
+      else
+        conditions[:path_info] = route.path
+        conditions[:request_method] = parse_request_methods route.conditions[:request_method] if route.conditions.has_key? :request_method
+      end
       requirements = route.requirements
       defaults = route.defaults
 
