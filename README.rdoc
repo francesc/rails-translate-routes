@@ -36,9 +36,9 @@ We want to have them in two languages english and spanish, to accomplish this wi
 
 1) We have to activate the translations appending this line to the end of 'routes.rb'
 
-  ActionDispatch::Routing::Translator.translate_from_file('config/locales/routes.yml')
+  ActionDispatch::Routing::Translator.translate_from_file('config/routes.yml')
 
-2) Now we can write translations on a standard YAML file (e.g: in config/locales/routes.yml), including all the locales and their translations:
+2) Now we can write translations on a standard YAML file (e.g: in config/routes.yml), including all the locales and their translations:
 
   en:
     # you can leave empty locales, for example the default one
@@ -116,7 +116,10 @@ In case you want the default languages to be scoped resulting in the following s
 
 You can specify the following option:
 
-  ActionDispatch::Routing::Translator.translate_from_file('config/locales/routes.yml', { :prefix_on_default_locale => true })
+  ActionDispatch::Routing::Translator.translate_from_file('config/routes.yml', { :prefix_on_default_locale => true })
+
+If you want to enable certain URLs without a language prefix, simply define them below that line.
+
 
 If you use the 'prefix_on_default_locale' you will have to make the proper redirect on your root controller from http://www.sampleapp.com/ to http://www.sampleapp.com/en or http://www.sampleapp.com/es rails-translate-routes adds an extra unstranslated root path:
 
@@ -147,7 +150,7 @@ In case you don't want the language prefix in the url path because you have a do
 
 You can specify the following option:
 
-  ActionDispatch::Routing::Translator.translate_from_file('config/locales/routes.yml', { :no_prefixes => true })
+  ActionDispatch::Routing::Translator.translate_from_file('config/routes.yml', { :no_prefixes => true })
 
 Note that the 'no_prefixes' option will override the 'prefix_on_default_locale' option.
 
@@ -160,7 +163,7 @@ I usually build app backend in namespaced controllers, routes, ... using transla
     match 'contact', :to => 'pages#contact'
   end
 
-  ActionDispatch::Routing::Translator.translate_from_file('config/locales/routes.yml', { :prefix_on_default_locale => true })
+  ActionDispatch::Routing::Translator.translate_from_file('config/routes.yml', { :prefix_on_default_locale => true })
 
   SampleApp::Application.routes.draw do
     namespace :admin do
