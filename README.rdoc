@@ -157,7 +157,7 @@ Note that the 'no_prefixes' option will override the 'prefix_on_default_locale' 
 
 <b>Keep untranslated routes</b>
 
-In case you want to keep access to untranslated routes, for easier api or ajax integration for example. Resulting in this structure: 
+In case you want to keep access to untranslated routes, for easier api or ajax integration for example. Resulting in this structure:
 
   /en/available-products
   /fr/produits-disponibles/
@@ -213,6 +213,7 @@ Thanks to:
   * Nico Ritsche (https://github.com/ncri)
   * Jean-Loup Fenaux (https://github.com/jlfenaux)
   * Cyril Mouge (https://github.com/shingara)
+  * Nicolas Arbogast (https://github.com/NicoArbogast)
 
 * Main development of forked gem:
   * Raul Murciano (http://github.com/raul)
