@@ -1,6 +1,6 @@
 source "http://rubygems.org"
 
-gem "railties", ">= 3.1"
+gem "activesupport", ">= 3.1"
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
