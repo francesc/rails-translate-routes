@@ -117,7 +117,7 @@ class RailsTranslateRoutes
     def add_dictionary_from_file file_path
       yaml = YAML.load_file(file_path)
       yaml.each_pair do |locale, translations|
-        merge_translations locale, translations
+        merge_translations locale, translations['routes']
       end
       set_available_locales_from_dictionary
     end
