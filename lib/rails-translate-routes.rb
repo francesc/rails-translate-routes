@@ -5,6 +5,7 @@
 class RailsTranslateRoutes
   TRANSLATABLE_SEGMENT = /^([\w-]+)(\()?/.freeze
   LOCALE_PARAM_KEY = :locale.freeze
+  URL_SEGMENTS_NAMESPACE = "url_segments"
   ROUTE_HELPER_CONTAINER = [
     ActionController::Base,
     ActionView::Base,
@@ -116,9 +117,9 @@ class RailsTranslateRoutes
     # Add translations from another file to the dictionary.
     def add_dictionary_from_file file_path
       yaml = YAML.load_file(file_path)
-      yaml.each_pair do |locale, translations|
-        merge_translations locale, translations
-      end
+      locale = yaml.keys.first
+      translations = yaml[locale][URL_SEGMENTS_NAMESPACE]
+      merge_translations locale, translations
       set_available_locales_from_dictionary
     end
 
@@ -139,7 +140,7 @@ class RailsTranslateRoutes
       reset_dictionary
       wanted_locales.each do |locale|
         @dictionary[locale] = Hash.new do |hsh, key|
-          hsh[key] = I18n.translate key, :locale => locale #DISCUSS: caching or no caching (store key and translation in dictionary?)
+          hsh[key] = I18n.translate(URL_SEGMENTS_NAMESPACE + "." + key, :locale => locale) #DISCUSS: caching or no caching (store key and translation in dictionary?)
         end
       end
       @available_locales = @dictionary.keys.map &:to_s
