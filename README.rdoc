@@ -194,6 +194,7 @@ Thanks to:
   * Johan Gyllenspetz (https://github.com/gyllen)
   * Nico Ritsche (https://github.com/ncri)
   * Jean-Loup Fenaux (https://github.com/jlfenaux)
+  * Cyril Mouge (https://github.com/shingara)
 
 * Main development of forked gem:
   * Raul Murciano (http://github.com/raul)
