@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Francesc Pla"]
-  s.date = "2012-06-20"
+  s.date = "2012-06-29"
   s.description = "Simple gem to translate routes in Rails 3.x based on translate_routes"
   s.email = "francesc@francesc.net"
   s.extra_rdoc_files = [
