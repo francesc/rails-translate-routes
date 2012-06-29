@@ -274,7 +274,11 @@ class RailsTranslateRoutes
       if Rails.version >= '3.2'
         conditions = { :path_info => translate_path(route.path.spec.to_s, locale) }
         conditions[:request_method] = parse_request_methods route.verb if route.verb != //
-        conditions[:subdomain] = route.constraints[:subdomain] if route.constraints
+        if route.constraints
+          route.constraints.each do |k,v|
+            conditions[k] = v unless k == :request_method
+          end
+        end
         defaults = route.defaults.merge LOCALE_PARAM_KEY => locale.dup
       else
         conditions = { :path_info => translate_path(route.path, locale) }
