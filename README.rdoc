@@ -234,9 +234,12 @@ Thanks to:
 
 == Similar projects
 
-There are other two projects for translating routes in Rails (which I know of), both of them are unfortunately unmaintained but you may want to check them out if you use Rails 2 or have different needs.
+Another fork of translate_routes, a much cleaner approach with better testing but less flexible than rails-translate-routes:
 
 * route_translator (https://github.com/enriclluelles/route_translator)
+
+Also there are other two projects for translating routes in Rails (which I know of), both of them are unfortunately unmaintained but you may want to check them out if you use old Rails versions or have different needs.
+
 * translate_routes (https://github.com/raul/translate_routes)
 * i18n_routing (https://github.com/kwi/i18n_routing)
 
