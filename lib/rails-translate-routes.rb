@@ -352,7 +352,8 @@ class RailsTranslateRoutes
     end
 
     def translate_string str, locale
-      @dictionary[locale.to_s][str.to_s]
+      translation = @dictionary[locale.to_s][str.to_s]
+      translation.present? ? Rack::Utils.escape(translation) : translation
     end
 
     private
