@@ -67,6 +67,14 @@ class RailsTranslateRoutes
     @keep_untranslated_routes = keep_untranslated_routes
   end
 
+  def custom_route_set
+    @custom_route_set ||= Rails.application.routes
+  end
+
+  def custom_route_set= custom_route_set
+    @custom_route_set = custom_route_set
+  end
+
   class << self
     # Default locale suffix generator
     def locale_suffix locale
@@ -183,6 +191,7 @@ class RailsTranslateRoutes
     # Translate a specific RouteSet, usually Rails.application.routes, but can
     # be a RouteSet of a gem, plugin/engine etc.
     def translate route_set
+      route_set ||= custom_route_set
       Rails.logger.info "Translating routes (default locale: #{default_locale})" if defined?(Rails) && defined?(Rails.logger)
 
       # save original routes and clear route set
@@ -384,8 +393,9 @@ module ActionDispatch
   module Routing
     module Translator
       class << self
-        def translate &block
-          RailsTranslateRoutes.init_with_yield(&block).translate Rails.application.routes
+        def translate(route_set = nil, &block)
+          route_set ||= custom_route_set
+          RailsTranslateRoutes.init_with_yield(&block).translate custom_route_set
         end
 
         def translate_from_file(file_path, options = {})
@@ -394,11 +404,12 @@ module ActionDispatch
           r.prefix_on_default_locale = true if options && options[:prefix_on_default_locale] == true
           r.no_prefixes = true if options && options[:no_prefixes] == true
           r.keep_untranslated_routes = true if options && options[:keep_untranslated_routes] == true
+          r.custom_route_set = options[:custom_route_set] if options
           r.translate Rails.application.routes
         end
 
         def i18n *locales
-          RailsTranslateRoutes.init_with_i18n(*locales).translate Rails.application.routes
+          RailsTranslateRoutes.init_with_i18n(*locales).translate
         end
       end
     end
