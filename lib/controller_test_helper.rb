@@ -1,4 +1,4 @@
-# This monkey patch injects the locale in the controller's params 
+# This monkey patch injects the locale in the controller's params
 # Reason: ActionController::TestCase doesn't support "default_url_options"
 #
 # Example: when the request you are testing needs the locale, e.g.
@@ -11,7 +11,7 @@ class ActionController::TestCase
 
   module Behavior
     def process_with_default_locale(action, parameters = nil, session = nil, flash = nil, http_method = 'GET')
-      parameters = { :locale => I18n.default_locale }.merge(parameters || {} )
+      parameters = { :locale => I18n.default_locale.to_s }.merge(parameters || {} )
       process_without_default_locale(action, parameters, session, flash, http_method)
     end
     alias_method_chain :process, :default_locale

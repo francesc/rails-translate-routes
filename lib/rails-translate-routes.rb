@@ -52,8 +52,8 @@ class RailsTranslateRoutes
     @no_prefixes = no_prefixes
   end
 
-  # option allowing to keep untranslated routes 
-  # *Ex: 
+  # option allowing to keep untranslated routes
+  # *Ex:
   #   *resources :users
   #   *translated routes
   #     en/members
@@ -66,7 +66,7 @@ class RailsTranslateRoutes
   def keep_untranslated_routes= keep_untranslated_routes
     @keep_untranslated_routes = keep_untranslated_routes
   end
-  
+
   class << self
     # Default locale suffix generator
     def locale_suffix locale
@@ -128,12 +128,19 @@ class RailsTranslateRoutes
       add_dictionary_from_file file_path
     end
 
-    # Add translations from another file to the dictionary.
+    # Add translations from another file to the dictionary (supports a single file or an array to have translations splited in several folders)
     def add_dictionary_from_file file_path
-      yaml = YAML.load_file(file_path)
-      yaml.each_pair do |locale, translations|
-        merge_translations locale, translations
+      file_path.class == Array ? files = file_path : files = [ file_path ]
+
+      yaml = Hash.new
+      files.each do |file|
+        yaml.merge! YAML.load_file(File.join(Rails.root, file))
       end
+
+      yaml.each_pair do |locale, translations|
+        merge_translations locale, translations['routes']
+      end
+
       set_available_locales_from_dictionary
     end
 
@@ -263,7 +270,7 @@ class RailsTranslateRoutes
       available_locales.map do |locale|
         translated_routes << translate_route(route, locale)
       end
-      
+
       # add untranslated_route without url helper if we want to keep untranslated routes
       translated_routes << untranslated_route(route) if @keep_untranslated_routes
       translated_routes
@@ -274,7 +281,11 @@ class RailsTranslateRoutes
       if Rails.version >= '3.2'
         conditions = { :path_info => translate_path(route.path.spec.to_s, locale) }
         conditions[:request_method] = parse_request_methods route.verb if route.verb != //
-        conditions[:subdomain] = route.constraints[:subdomain] if route.constraints
+        if route.constraints
+          route.constraints.each do |k,v|
+            conditions[k] = v unless k == :request_method
+          end
+        end
         defaults = route.defaults.merge LOCALE_PARAM_KEY => locale.dup
       else
         conditions = { :path_info => translate_path(route.path, locale) }
@@ -290,7 +301,7 @@ class RailsTranslateRoutes
 
     # Re-generate untranslated routes (original routes) with name set to nil (which prevents conflict with default untranslated_urls)
     def untranslated_route route
-      conditions = {} 
+      conditions = {}
       if Rails.version >= '3.2'
         conditions[:path_info] = route.path.spec.to_s
         conditions[:request_method] = parse_request_methods route.verb if route.verb != //
@@ -304,7 +315,7 @@ class RailsTranslateRoutes
 
       [route.app, conditions, requirements, defaults]
     end
-    
+
     # Add prefix for all non-default locales
     def add_prefix? locale
       if @no_prefixes
@@ -322,7 +333,7 @@ class RailsTranslateRoutes
       path_without_optional_segments = final_optional_segments ? path.gsub(final_optional_segments,'') : path
       path_segments = path_without_optional_segments.split("/")
       new_path = path_segments.map{ |seg| translate_path_segment(seg, locale) }.join('/')
-      new_path = "/#{locale.downcase}#{new_path}" if add_prefix?(locale)
+      new_path = "/#{locale}#{new_path}" if add_prefix?(locale)
       new_path = '/' if new_path.blank?
       final_optional_segments ? new_path + final_optional_segments : new_path
     end
@@ -379,7 +390,7 @@ module ActionDispatch
 
         def translate_from_file(file_path, options = {})
           file_path = %w(config locales routes.yml) if file_path.blank?
-          r = RailsTranslateRoutes.init_from_file(File.join(Rails.root, file_path))
+          r = RailsTranslateRoutes.init_from_file(file_path)
           r.prefix_on_default_locale = true if options && options[:prefix_on_default_locale] == true
           r.no_prefixes = true if options && options[:no_prefixes] == true
           r.keep_untranslated_routes = true if options && options[:keep_untranslated_routes] == true
