@@ -187,6 +187,34 @@ I usually build app backend in namespaced controllers, routes, ... using transla
       end
     end
 
+### Translation of routes inside engines
+
+If you need to translate routes inside a mounted engine, like the example below:
+
+    MyEngine::Engine.routes.draw do
+      match "route_to_translate" => "controller#action", :as => :to_translate
+    end
+
+    Rails.application.routes.draw do
+      match 'untranslated' => ...
+
+      mount MyEngine::Engine => "/my_engine"
+    end
+
+    # You want to get routes like this
+    # ---------------------------------
+    untranslated  /untranslated(.:format) home#index
+    my_engine     /my_engine              MyEngine::Engine
+
+    Routes for MyEngine::Engine:
+            to_translate_en  /en/translated(.:format)     my_engine/controller#action {:locale=>"en"}
+            to_translate_fr  /fr/traduit(.:format)        my_engine/controller#action {:locale=>"fr"}
+
+All you need to do is to add rails-translate-routes to your engine gemspec and use the option :custom_route_set as follows
+
+  # inside your engine/config/routes
+  ActionDispatch::Routing::Translator.translate_from_file('config/locales/routes.yml', { :custom_route_set => MyEngine::Engine.routes })
+
 ## Translation YAML options
 
 By default translations of routes are specified on a single YAML file (e.g: in `config/locales/routes.yml`), but in some cases you might want to split the routes translations on several files. For example having all application translations files a in folder per language:
@@ -204,34 +232,6 @@ By default translations of routes are specified on a single YAML file (e.g: in `
 To pass several YAML files to rails-translate-routes you can pass an array of paths:
 
     ActionDispatch::Routing::Translator.translate_from_file(I18n.available_locales.map { |locale| "config/locales/#{locale}/routes.yml" }, { :prefix_on_default_locale => true })
-
-## Translation of routes inside engines
-  
-If you need to translate routes inside a mounted engine, like the example below:
-    
-    MyEngine::Engine.routes.draw do
-      match "route_to_translate" => "controller#action", :as => :to_translate
-    end
-    
-    Rails.application.routes.draw do
-      match 'untranslated' => ...
-      
-      mount MyEngine::Engine => "/my_engine"
-    end
-
-    # You want to get routes like this
-    # ---------------------------------
-    untranslated  /untranslated(.:format) home#index
-    my_engine     /my_engine              MyEngine::Engine
-
-    Routes for MyEngine::Engine:
-            to_translate_en  /en/translated(.:format)     my_engine/controller#action {:locale=>"en"}
-            to_translate_fr  /fr/traduit(.:format)        my_engine/controller#action {:locale=>"fr"}
-
-All you need to do is to add rails-translate-routes to your engine gemspec and use the option :custom_route_set as follows
-
-  # inside your engine/config/routes
-  ActionDispatch::Routing::Translator.translate_from_file('config/locales/routes.yml', { :custom_route_set => MyEngine::Engine.routes })
 
 ## Testing
 
