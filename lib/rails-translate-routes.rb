@@ -395,7 +395,7 @@ module ActionDispatch
       class << self
         def translate(route_set = nil, &block)
           route_set ||= custom_route_set
-          RailsTranslateRoutes.init_with_yield(&block).translate custom_route_set
+          RailsTranslateRoutes.init_with_yield(&block).translate route_set
         end
 
         def translate_from_file(file_path, options = {})
@@ -405,7 +405,7 @@ module ActionDispatch
           r.no_prefixes = true if options && options[:no_prefixes] == true
           r.keep_untranslated_routes = true if options && options[:keep_untranslated_routes] == true
           r.custom_route_set = options[:custom_route_set] if options
-          r.translate Rails.application.routes
+          r.translate r.custom_route_set
         end
 
         def i18n *locales
