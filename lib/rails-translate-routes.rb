@@ -293,10 +293,11 @@ class RailsTranslateRoutes
         defaults = route.defaults.merge LOCALE_PARAM_KEY => locale
       end
 
+      anchored = route.path.anchored
       requirements = route.requirements.merge LOCALE_PARAM_KEY => locale
       new_name = "#{route.name}_#{locale_suffix(locale)}" if route.name
 
-      [route.app, conditions, requirements, defaults, new_name]
+      [route.app, conditions, requirements, defaults, new_name, anchored]
     end
 
     # Re-generate untranslated routes (original routes) with name set to nil (which prevents conflict with default untranslated_urls)
