@@ -133,7 +133,7 @@ A simple example of a redirection to user locale in index method:
     def index
       unless params[ :locale]
         # it takes I18n.locale from the previous example set_locale as before_filter in application controller
-        redirect_to eval("root_#{I18n.locale}_path")
+        redirect_to eval("root_#{I18n.locale}_path") and return
       end
 
       # rest of the controller logic ...
