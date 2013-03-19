@@ -91,7 +91,7 @@ And that's it! Now if we execute `rake routes`
             root_en        /                                {:controller=>"public", :action=>"index"}
             root_es        /es                              {:controller=>"public", :action=>"index"}
 
-The application recognizes the different routes and sets the `I18n.locale` value in controllers, but what about the routes generation? As you can see on the previous rake routes execution, the `contact_es_path` and `contact_en_path` routing helpers have been generated and are available in your controllers and views. Additionally, a `contact_path` helper has been generated, which generates the routes according to the current request's locale. This means that if you use named routes you don't need to modify your application links because the routing helpers are automatically adapted to the current locale.
+The application recognizes the different routes and sets the `I18n.locale` value in controllers, but what about the routes generation? As you can see on the previous rake routes execution, the `contact_es_path` and `contact_en_path` routing helpers have been generated and are available in your controllers and views. Additionally, a `contact_path` helper has been generated, which generates the routes according to the current request's locale (if no explicit `:locale` option is given). This means that if you use named routes you don't need to modify your application links because the routing helpers are automatically adapted to the current locale.
 
 ## URL structure options
 
