@@ -250,13 +250,18 @@ class RailsTranslateRoutes
     #   people_path -> people_de_path
     #   I18n.locale = :fr
     #   people_path -> people_fr_path
+    # May also be called with explicit :locale option, e.g.
+    #   user_path(1, :locale => :en) -> user_en_path(1)
     def add_untranslated_helpers_to_controllers_and_views old_name
       ['path', 'url'].map do |suffix|
         new_helper_name = "#{old_name}_#{suffix}"
 
         ROUTE_HELPER_CONTAINER.each do |helper_container|
           helper_container.send :define_method, new_helper_name do |*args|
-            send "#{old_name}_#{locale_suffix(I18n.locale)}_#{suffix}", *args
+            options = args.extract_options!
+            locale = options.delete(:locale) || I18n.locale
+            args << options if options.present?
+            send "#{old_name}_#{locale_suffix(locale)}_#{suffix}", *args
           end
         end
 
