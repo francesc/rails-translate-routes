@@ -230,7 +230,7 @@ Contributors of the current gem:
   * Johan Gyllenspetz (https://github.com/gyllen)
   * Nico Ritsche (https://github.com/ncri)
   * Jean-Loup Fenaux (https://github.com/jlfenaux)
-  * Cyril Mouge (https://github.com/shingara)
+  * Cyril Mougel (https://github.com/shingara)
   * Nicolas Arbogast (https://github.com/NicoArbogast)
   * Stephan van Eijkelenburg (https://github.com/stephanvane)
   * Víctor Martín (https://github.com/eltercero)
