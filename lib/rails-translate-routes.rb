@@ -5,12 +5,24 @@
 class RailsTranslateRoutes
   TRANSLATABLE_SEGMENT = /^([\w-]+)(\()?/.freeze
   LOCALE_PARAM_KEY = :locale.freeze
-  ROUTE_HELPER_CONTAINER = [
-    ActionController::Base,
-    ActionView::Base,
-    ActionMailer::Base,
-    ActionDispatch::Routing::UrlFor
-  ].freeze
+
+  def self.route_helper_container
+    @route_helper_container ||= begin
+      classes = ['ActionController::Base',
+                 'ActionMailer::Base',
+                 'ActionDispatch::Routing::UrlFor',
+                 'ActionDispatch::Routing::RouteSet::MountedHelpers']
+
+      classes.map! do |klass_name|
+        begin
+          klass_name.constantize
+        rescue NameError
+          nil
+        end
+      end
+      classes.compact
+    end
+  end
 
   # Attributes
 
@@ -254,7 +266,7 @@ class RailsTranslateRoutes
       ['path', 'url'].map do |suffix|
         new_helper_name = "#{old_name}_#{suffix}"
 
-        ROUTE_HELPER_CONTAINER.each do |helper_container|
+        self.class.route_helper_container.each do |helper_container|
           helper_container.send :define_method, new_helper_name do |*args|
             send "#{old_name}_#{locale_suffix(I18n.locale)}_#{suffix}", *args
           end
@@ -416,7 +428,7 @@ ActionController::Base.class_eval do
 end
 
 # Add locale_suffix to controllers, views and mailers
-RailsTranslateRoutes::ROUTE_HELPER_CONTAINER.each do |klass|
+RailsTranslateRoutes.route_helper_container.each do |klass|
   klass.class_eval do
     private
     def locale_suffix locale
