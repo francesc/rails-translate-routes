@@ -9,9 +9,9 @@ class RailsTranslateRoutes
   def self.route_helper_container
     @route_helper_container ||= begin
       classes = ['ActionController::Base',
-                 'ActionView::Base',
                  'ActionMailer::Base',
-                 'ActionDispatch::Routing::UrlFor']
+                 'ActionDispatch::Routing::UrlFor',
+                 'ActionDispatch::Routing::RouteSet::MountedHelpers']
 
       classes.map! do |klass_name|
         begin
