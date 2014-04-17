@@ -3,7 +3,7 @@
 # This class knows nothing about Rails.root or Rails.application.routes,
 # and therefore is easier to test without a Rails app.
 class RailsTranslateRoutes
-  TRANSLATABLE_SEGMENT = /^([\w-]+)(\()?/.freeze
+  TRANSLATABLE_SEGMENT = /^([\w-]+)(\.?:[\w-]+)?(\()?/.freeze
   LOCALE_PARAM_KEY = :locale.freeze
   ROUTE_HELPER_CONTAINER = [
     ActionController::Base,
@@ -339,16 +339,19 @@ class RailsTranslateRoutes
     end
 
     # Tries to translate a single path segment. If the path segment
-    # contains sth. like an optional format "people(.:format)", only
+    # contains a dynamic part like "people.:format" or "people(.:format)", only
     # "people" will be translated, if there is no translation, the path
     # segment is blank or begins with a ":" (param key), the segment
     # is returned untouched
     def translate_path_segment segment, locale
       return segment if segment.blank? or segment.starts_with?(":")
 
-      match = TRANSLATABLE_SEGMENT.match(segment)[1] rescue nil
+      match = TRANSLATABLE_SEGMENT.match(segment) rescue nil
 
-      (translate_string(match, locale) || segment)
+      translated_part = (match && match[1]) ? translate_string(match[1], locale) : nil
+      translated_segment = translated_part ? translated_part + (match[2] || '') : nil
+
+      translated_segment || segment
     end
 
     def translate_string str, locale
